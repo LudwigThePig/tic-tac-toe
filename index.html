@@ -9,20 +9,37 @@
   <link rel="stylesheet" type="text/css" media="screen" href="main.css">
 </head>
 <body>
+
 <div id="root">
-  <div id="gameover" class="board">
-    <h1 id='gameover-text'></h1>
-    <div id='play-again'>Play Again?</div>
-  </div>
-  <div class="board score">
-    <h1>Tic Tac Toe</h1>
-    <h3>Current Player: <span class="current-player"></span></h3>
-    <div id="scores">
-      <h3>Scores</h3>
-      <p>X: <span id="x-score"></span></p>
-      <p>O: <span id="o-score"></span></p>
+
+  <!--Start Game-->
+  <div id="start-game" class="board">
+    <div class="forms board">
+      
+      <form>
+        <p>Player 1</p><input name="player" type="text" style="color: red; background: #1d1d1b" value="red" />
+        <p>Player 2</p><input name="player" type="text" style="color: blue; background: #1d1d1b" value="blue" />
+      </form>
+      <div id="start" class="button">START GAME</div>
     </div>
   </div>
+
+  <!-- Gameover -->
+  <div id="gameover" class="board">
+    <h1 id='gameover-text'></h1>
+    <div id="play-again" class="button">Play Again?</div>
+  </div>
+
+  <div class="board score">
+    <h1>Tic Tac Toe</h1>
+    <h3 id="current-player"></h3>
+    <div id="scores">
+      <h3>Scores</h3>
+      <p> <span class="red">X:</span> <span id="x-score">0</span></p>
+      <p> <span class="blue">O:</span> <span id="o-score">0</span></p>
+    </div>
+  </div>
+
   <div class="game-board">
     <div id="1" class="square"></div>
     <div id="2" class="square"></div>

@@ -36,6 +36,8 @@ class Board {
     this.currentPlayer = startingPlayer || 'x';
     this.winner = null;
     this.lastMove = null;
+    this.xName = 'X';
+    this.oName = 'O';
   }
   
   handleBoardInput = (move) => {
@@ -62,13 +64,17 @@ class Board {
       this.paintSquares();
 
       if (this.winner !== null) {
-        this.gameOver(`${this.winner.toUpperCase()} WINS!`);
-      }
-      if (this.xMoves.length + this.oMoves.length === 9) {
+        const winner = this.winner === 'x' ? this.xName : this.oName;
+        this.gameOver(`${winner} WINS!`);
+      } else if (this.xMoves.length + this.oMoves.length === 9) {
         this.gameOver('TIE GAME!');
       }
       //update current player in scoreboard and hidden gameover screen
-      [].forEach.call($c('current-player'), el => el.innerHTML = this.currentPlayer.toUpperCase());
+      $('current-player').classList.remove('blue');
+      $('current-player').classList.remove('red');
+      $('current-player').innerHTML = this.currentPlayer === 'x' ? this.xName : this.oName;
+      $('current-player').classList.add(this.currentPlayer === 'x' ? 'red' : 'blue');
+
     }
 
   //helper functions
@@ -131,4 +137,18 @@ ticTacToe.updateView();
 gameBoard.addEventListener('click', (e)=>{
   const square =  e.composedPath()[0].id;
   ticTacToe.handleBoardInput(square);
-})
+});
+
+$('start').addEventListener('click', (e)=>{
+  //get form data and update state
+  const player1 = document.getElementsByName('player')[0].value;
+  const player2 = document.getElementsByName('player')[1].value;
+  ticTacToe.xName = player1;
+  ticTacToe.oName = player2;
+
+  //paint the names and remove the starting screen
+  ticTacToe.updateView();
+  $c('red')[1].innerHTML = player1;
+  $c('blue')[0].innerHTML = player2;
+  $('start-game').style.display = 'none';
+});

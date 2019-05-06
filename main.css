@@ -7,6 +7,25 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 
+#start-game{
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: #cb8b5a;
+  color: white;
+  z-index: 1;
+}
+.forms{
+  background: #1d1d1b;
+  height: 200px;
+  width: 300px
+}
+
+input{
+  text-align: center;
+}
+
+
 .game-board{
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
@@ -40,13 +59,19 @@ body{
   justify-content: space-around;
   flex-direction: column;
   text-align: center;
-  color: black;
 }
 .score{
   position: relative;
   padding: 20px;
   width: 100% - 20px;
   background: #cb8b5a;
+}
+
+.red{
+  color: red;
+}
+.blue{
+  color: blue;
 }
 
 #gameover{
@@ -59,14 +84,13 @@ body{
   display: none;
 }
 
-#play-again{
+.button{
   background: #bbb;
   width: 100px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #333;
   cursor: pointer;
 }
 

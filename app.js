@@ -35,7 +35,6 @@ class Board {
     this.oScore = 0;
     this.currentPlayer = startingPlayer || 'x';
     this.winner = null;
-    this.lastMove = null;
     this.xName = 'X';
     this.oName = 'O';
     this.gravity = false;
@@ -51,20 +50,27 @@ class Board {
         this.oMoves.push(move);
       }
 
-      if (this.gravity) {
-        console.log('hi')
-        this.xMoves = this.xMoves.map(val => val = val % 9 + 1);
-        this.oMoves = this.oMoves.map(val => val = val % 9 + 1);
-        
-
-      }
-
       //check for winner
       this.winner = this.checkWin() ? this.currentPlayer : null;
 
       //change players
       this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
       this.updateView();
+      if (this.gravity) {
+        setTimeout(()=>{
+          console.log('hi')
+          let xRotated = this.xMoves.map(val => val = this.rotated(val))
+            .sort((a, b) => b - a);
+          let oRotated = this.oMoves.map(val => val = this.rotated(val))
+            .sort((a, b) => b - a);
+          xRotated = xRotated.map(val => this.gravitated(val, xRotated));
+          oRotated = oRotated.map(val => this.gravitated(val, oRotated));
+
+          this.xMoves = xRotated;
+          this.oMoves = oRotated; 
+          this.updateView();
+        }, 500)
+      }
     }
   }
     
@@ -84,7 +90,6 @@ class Board {
       $('current-player').classList.remove('red');
       $('current-player').innerHTML = this.currentPlayer === 'x' ? this.xName : this.oName;
       $('current-player').classList.add(this.currentPlayer === 'x' ? 'red' : 'blue');
-
     }
 
   //helper functions
@@ -136,6 +141,49 @@ class Board {
 
     //paint the board
     this.updateView()
+  }
+
+  gravitated = (x, arr) => {
+    if (x > 6) {
+      return x;
+    } else if (x > 3) {
+      if (!arr.includes(x + 3)){
+        return x + 3;
+      } else {
+        return x + 3;
+      }
+    } else {
+      if (!arr.includes(x + 6)) {
+        return x + 6
+      } else if (!arr.includes(x + 3)){
+        return x + 3;
+      } else {
+        return x;
+      }
+    }
+  }
+
+  rotated = (x) => { //had to brute force this one :(
+    switch (x) {
+      case '1':
+        return '3';
+      case '2':
+        return '6';
+      case '3':
+        return '9';
+      case '4':
+        return '2';
+      case '5':
+        return '5';
+      case '6':
+        return '8';
+      case '7':
+        return '1';
+      case '8':
+        return '4';
+      case '9':
+        return '7';
+    }
   }
 }
 

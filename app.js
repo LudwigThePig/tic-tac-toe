@@ -20,25 +20,45 @@
  * 
  * */
 
+const gameBoard = document.getElementsByClassName('game-board')[0];
+
 class Board {
   constructor(startingPlayer){
-    xMoves = [];
-    oMoves = [];
-    currentPlayer = startingPlayer || 'x';
-    winner = null;
-    lastMove = null;
+    this.xMoves = [];
+    this.oMoves = [];
+    this.currentPlayer = startingPlayer || 'x';
+    this.winner = null;
+    this.lastMove = null;
   }
   
-  handleBoardInput(player, position) {
+  handleBoardInput = (position) => {
+    if (this.currentPlayer === 'x') {
+      this.xMoves.push(position);
+      this.currentPlayer = 'o';
+    } else if (this.currentPlayer === 'o') {
+      this.oMoves.push(position);
+      this.currentPlayer = 'x';
+    }
+
     return;
   }
 
-  checkWin(player) {
+  checkWin = () => {
     return;
   }
 
-  updateView(player) {
+  updateView = () => {
     return;
   }
 
 }
+
+let ticTacToe = new Board();
+
+ 
+/* __EVENT LISTENERS__ */
+
+gameBoard.addEventListener('click', (e)=>{
+  const square =  e.composedPath()[0].id;
+  ticTacToe.handleBoardInput(square);
+})

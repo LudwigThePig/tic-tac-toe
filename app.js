@@ -48,8 +48,8 @@ class Board {
         this.oMoves.push(move);
       }
       //check for winner
-      console.log(this.checkWin())
       this.winner = this.checkWin() ? this.currentPlayer : null;
+
       //change players
       this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
       this.updateView();
@@ -61,11 +61,12 @@ class Board {
       [].forEach.call($c('square'), el => el.style.background = '#eee');
       this.paintSquares();
 
-      //check for winner
       if (this.winner !== null) {
-        this.winnerView();
+        this.gameOver(`${this.winner.toUpperCase()} WINS!`);
       }
-
+      if (this.xMoves.length + this.oMoves.length === 9) {
+        this.gameOver('TIE GAME!');
+      }
       //update current player in scoreboard and hidden gameover screen
       [].forEach.call($c('current-player'), el => el.innerHTML = this.currentPlayer.toUpperCase());
     }
@@ -90,9 +91,11 @@ class Board {
       $(square).style.background = 'blue';
     });
   }
-  winnerView = () => {
+  gameOver = (text) => {
+    //add flashy background, display gameover screen, and wire up playagain button.
     document.body.classList.add('winner');
     $('gameover').style.display = 'flex';
+    $('gameover-text').innerHTML = text;
     $('play-again').addEventListener('click', ()=>{
       this.clearBoard();
     });
@@ -114,6 +117,8 @@ class Board {
     this.oMoves = [];
     document.body.classList.remove('winner');
     $('gameover').style.display = 'none';
+
+    //paint the board
     this.updateView()
   }
 }

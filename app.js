@@ -40,12 +40,11 @@ class Board {
     } else {
       if (this.currentPlayer === 'x') {
         this.xMoves.push(move);
-        this.currentPlayer = 'o';
-      } else if (this.currentPlayer === 'o') {
+      } else {
         this.oMoves.push(move);
-        this.currentPlayer = 'x';
       }
-      this.checkWin();
+      console.log(this.checkWin());
+      this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
       this.updateView();
     }
   }
@@ -66,28 +65,10 @@ class Board {
   }
 
   checkWin = () => {
-    const playerMoves = this.currentPlayer !== 'x' ? this.xMoves : this.oMoves; //remember, currentPlayer has already been switched
-    playerMoves.forEach((move, idx) => {
-      let horiz = playerMoves.filter(x => mov),
-          vert = [move],
-          diag = [move];
-      for (let i = idx; i < playerMoves.length; i++) {
-        const cur = playerMoves[i]
-        console.log(playerMoves, cur)
-        if (cur - 1 === horiz[horiz.length - 1]) {
-          horiz.push(cur);
-        }
-        if (vert[vert.length - 1] === cur - 3) {
-          vert.push(cur)
-        }
-        if (diag[diag.length - 1] === cur - 4) {
-          diag.push(cur);
-        }
-      }
-      // console.log(horiz, vert, diag)
-    })
+    const winConditions = [['1','2','3'], ['4','5','6'], ['7','8','9'], ['1','4','7'], ['2','5','8'], ['3','6','9'], ['1','5','9'], ['3','5','7']];
+    const playerMoves = this.currentPlayer === 'x' ? this.xMoves : this.oMoves;
+    return winConditions.some(condition => condition.every(position => playerMoves.includes(position)))
   }
-
 }
 
 let ticTacToe = new Board();

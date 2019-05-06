@@ -144,6 +144,7 @@ class Board {
   }
 
   gravitated = (x, arr) => {
+    x = Number(x)
     if (x > 6) {
       return x;
     } else if (x > 3) {

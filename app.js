@@ -45,14 +45,19 @@ class Board {
         this.oMoves.push(move);
         this.currentPlayer = 'x';
       }
-      checkWin();
-      updateView();
+      this.checkWin();
+      this.updateView();
     }
   }
     
     updateView = () => {
-      return;
-  }
+      this.xMoves.forEach( square => {
+        document.getElementById(square).style.background = 'red';
+      });
+      this.oMoves.forEach( square => {
+        document.getElementById(square).style.background = 'blue';
+      });
+    }
 
   //helper functions
   checkForConflicts = (move) => {
@@ -61,7 +66,26 @@ class Board {
   }
 
   checkWin = () => {
-    return;
+    const playerMoves = this.currentPlayer !== 'x' ? this.xMoves : this.oMoves; //remember, currentPlayer has already been switched
+    playerMoves.forEach((move, idx) => {
+      let horiz = playerMoves.filter(x => mov),
+          vert = [move],
+          diag = [move];
+      for (let i = idx; i < playerMoves.length; i++) {
+        const cur = playerMoves[i]
+        console.log(playerMoves, cur)
+        if (cur - 1 === horiz[horiz.length - 1]) {
+          horiz.push(cur);
+        }
+        if (vert[vert.length - 1] === cur - 3) {
+          vert.push(cur)
+        }
+        if (diag[diag.length - 1] === cur - 4) {
+          diag.push(cur);
+        }
+      }
+      // console.log(horiz, vert, diag)
+    })
   }
 
 }

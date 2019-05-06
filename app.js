@@ -38,6 +38,7 @@ class Board {
     this.lastMove = null;
     this.xName = 'X';
     this.oName = 'O';
+    this.gravity = false;
   }
   
   handleBoardInput = (move) => {
@@ -49,6 +50,15 @@ class Board {
       } else {
         this.oMoves.push(move);
       }
+
+      if (this.gravity) {
+        console.log('hi')
+        this.xMoves = this.xMoves.map(val => val = val % 9 + 1);
+        this.oMoves = this.oMoves.map(val => val = val % 9 + 1);
+        
+
+      }
+
       //check for winner
       this.winner = this.checkWin() ? this.currentPlayer : null;
 
@@ -134,12 +144,12 @@ ticTacToe.updateView();
  
 /* __EVENT LISTENERS__ */
 
-gameBoard.addEventListener('click', (e)=>{
+gameBoard.addEventListener('click', e => {
   const square =  e.composedPath()[0].id;
   ticTacToe.handleBoardInput(square);
 });
 
-$('start').addEventListener('click', (e)=>{
+$('start').addEventListener('click', e => {
   //get form data and update state
   const player1 = document.getElementsByName('player')[0].value;
   const player2 = document.getElementsByName('player')[1].value;
@@ -152,3 +162,8 @@ $('start').addEventListener('click', (e)=>{
   $c('blue')[0].innerHTML = player2;
   $('start-game').style.display = 'none';
 });
+
+$('gravity-toggle').addEventListener('click', e => {
+  const state = e.path[0].checked;
+  ticTacToe.gravity = state;
+})

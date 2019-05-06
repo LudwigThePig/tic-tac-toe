@@ -5,12 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Tic Tac Toe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
   <link rel="stylesheet" type="text/css" media="screen" href="main.css">
 </head>
 <body>
-  <div class="scoreboard">
+<div id="root">
+  <div id="gameover" class="board">
+    <h1><span class="current-player"></span> won the game!</h1>
+    <div id='play-again'>Play Again?</div>
+  </div>
+  <div class="board score">
     <h1>Tic Tac Toe</h1>
-    <p>Current Player:<span id="current-player"></span></p>
+    <h3>Current Player: <span class="current-player"></span></h3>
+    <div id="scores">
+      <h3>Scores</h3>
+      <p>X: <span id="x-score"></span></p>
+      <p>O: <span id="o-score"></span></p>
+    </div>
   </div>
   <div class="game-board">
     <div id="1" class="square"></div>
@@ -24,5 +35,6 @@
     <div id="9" class="square"></div>
   </div>
   <script src="app.js"></script>
+</div>  
 </body>
 </html>

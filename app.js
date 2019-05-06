@@ -23,12 +23,16 @@
  * 
  * */
 
-const gameBoard = document.getElementsByClassName('game-board')[0];
+const $ = (id) => document.getElementById(id);
+const $c = (classname) => document.getElementsByClassName(classname);
+const gameBoard = $c('game-board')[0];
 
 class Board {
   constructor(startingPlayer){
     this.xMoves = [];
     this.oMoves = [];
+    this.xScore = 0;
+    this.oScore = 0;
     this.currentPlayer = startingPlayer || 'x';
     this.winner = null;
     this.lastMove = null;
@@ -43,19 +47,27 @@ class Board {
       } else {
         this.oMoves.push(move);
       }
-      console.log(this.checkWin());
+      //check for winner
+      console.log(this.checkWin())
+      this.winner = this.checkWin() ? this.currentPlayer : null;
+      //change players
       this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
       this.updateView();
     }
   }
     
     updateView = () => {
-      this.xMoves.forEach( square => {
-        document.getElementById(square).style.background = 'red';
-      });
-      this.oMoves.forEach( square => {
-        document.getElementById(square).style.background = 'blue';
-      });
+      //clear squares then paint them
+      [].forEach.call($c('square'), el => el.style.background = '#eee');
+      this.paintSquares();
+
+      //check for winner
+      if (this.winner !== null) {
+        this.winnerView();
+      }
+
+      //update current player in scoreboard and hidden gameover screen
+      [].forEach.call($c('current-player'), el => el.innerHTML = this.currentPlayer.toUpperCase());
     }
 
   //helper functions
@@ -69,10 +81,45 @@ class Board {
     const playerMoves = this.currentPlayer === 'x' ? this.xMoves : this.oMoves;
     return winConditions.some(condition => condition.every(position => playerMoves.includes(position)))
   }
+  
+  paintSquares = () => {
+    this.xMoves.forEach( square => {
+      $(square).style.background = 'red';
+    });
+    this.oMoves.forEach( square => {
+      $(square).style.background = 'blue';
+    });
+  }
+  winnerView = () => {
+    document.body.classList.add('winner');
+    $('gameover').style.display = 'flex';
+    $('play-again').addEventListener('click', ()=>{
+      this.clearBoard();
+    });
+  }
+
+  clearBoard = () => {
+    //update scores
+    if (this.winner === 'x') this.xScore++;
+    if (this.winner === 'o') this.oScore++;
+    $('x-score').innerHTML = this.xScore.toString();
+    $('o-score').innerHTML = this.oScore.toString();
+
+    //Winner starts next round
+    this.currentPlayer = this.winner;
+    this.winner = null;
+    
+    //clear board
+    this.xMoves = [];
+    this.oMoves = [];
+    document.body.classList.remove('winner');
+    $('gameover').style.display = 'none';
+    this.updateView()
+  }
 }
 
 let ticTacToe = new Board();
-
+ticTacToe.updateView();
  
 /* __EVENT LISTENERS__ */
 

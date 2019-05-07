@@ -1,0 +1,26 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "This is a miniapp that I created during my time at hack reactor.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LudwigThePig/tic-tac-toe.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LudwigThePig/tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/LudwigThePig/tic-tac-toe#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "nodemon": "^1.19.0"
+  }
+}

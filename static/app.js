@@ -46,8 +46,8 @@ const gameBoard = $c('game-board')[0];
 class Board {
     /******
     * MODEL *
-   ****************/
-  constructor(startingPlayer){
+    ********/
+  constructor(startingPlayer) {
     this.xMoves = [];
     this.oMoves = [];
     this.xScore = 0;
@@ -65,36 +65,26 @@ class Board {
    ****************/
   handleBoardInput = (move) => {
     if (this.checkForConflicts(move)) {
-      console.log('Hey, that move has already been played!');
+      return;
+    } 
+    if (this.currentPlayer === 'x') {
+      this.xMoves.push(move);
     } else {
-      if (this.currentPlayer === 'x') {
-        this.xMoves.push(move);
-      } else {
-        this.oMoves.push(move);
-      }
-
-      //check for winner
-      this.winner = this.checkWin() ? this.currentPlayer : null;
-
-      //change players
-      this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
-      this.updateView();
-      if (this.gravity) {
-        setTimeout(()=>{
-          console.log('hi')
-          let xRotated = this.xMoves.map(val => val = this.rotated(val))
-            .sort((a, b) => b - a);
-          let oRotated = this.oMoves.map(val => val = this.rotated(val))
-            .sort((a, b) => b - a);
-          xRotated = xRotated.map(val => this.gravitated(val, [...oRotated, ...xRotated]).toString());
-          oRotated = oRotated.map(val => this.gravitated(val, [...oRotated, ...xRotated]).toString());
-
-          this.xMoves = xRotated;
-          this.oMoves = oRotated; 
-          this.updateView();
-        }, 500)
-      }
+      this.oMoves.push(move);
     }
+
+    //check for winner and change players
+    this.winner = this.checkWin() ? this.currentPlayer : null;
+    this.currentPlayer = this.currentPlayer === 'x' ? 'o' : 'x';
+
+    //self-explanatory
+    this.updateView();
+
+    //if there is gravity, updates model and rerenders after .5 seconds
+    if (this.gravity) {
+      setTimeout(()=> this.applyGravity(), 500)
+    }
+    
   }
 
 
@@ -181,25 +171,32 @@ class Board {
     /****************
    * GRAVITY FEATURE *
    ****************/
+
+  //updates model then calls update view
+  applyGravity = () => {
+    //Spin Em'
+    let xRotated = this.xMoves.map(val => val = this.rotated(val))
+      .sort((a, b) => b - a);
+    let oRotated = this.oMoves.map(val => val = this.rotated(val))
+      .sort((a, b) => b - a);
+    //and drop em'
+    xRotated = xRotated.map(val => this.gravitated(val, [...xRotated, ...oRotated]));
+    oRotated = oRotated.map(val => this.gravitated(val, [...xRotated, ...oRotated]));
+
+    this.xMoves = xRotated;
+    this.oMoves = oRotated;
+    console.log(this.xMoves, this.oMovees) 
+    this.updateView();
+  }
+
+  //helper functions
   gravitated = (x, arr) => {
-    x = Number(x);
-    arr = arr.map(x => Number(x));
-    if (x > 6) {
-      return x;
-    } else if (x > 3) {
-      if (!arr.includes(x + 3)){
-        return x + 3;
-      } else {
-        return x + 3;
-      }
+    let next = Number(x) + 3;
+    next = next.toString();
+    if (!arr.includes(next) && next < '9') {
+      return this.gravitated(next, arr)
     } else {
-      if (!arr.includes(x + 6)) {
-        return x + 6
-      } else if (!arr.includes(x + 3)){
-        return x + 3;
-      } else {
-        return x;
-      }
+      return next;
     }
   }
 

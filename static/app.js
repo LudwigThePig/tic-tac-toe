@@ -1,4 +1,6 @@
 /**
+ * __If you are reading this code, I am very very sorry__
+ * 
  ********* BOARD CLASS *********
  *  __Constructor__
  * -xMoves and oMoves store the players moves in an array.
@@ -11,8 +13,14 @@
  *  -updates lastMove and either xMoves or oMoves.
  * 
  * 
- * __UpdateView__
+ * __Update View__
  * Updates the DOM with last move. If there is a winner, does something special :D
+ * 
+ * __Paint Squares__
+ * Maps the player's moves to the appropriate squares
+ * 
+ * __Clear Board__
+ * Paints all of the squares to white. Called by game-over, after the player's moves arrays are cleared (that's a lot of plurals and possessive nouns)
  * 
  * __Check Win__
  * Helper function checks to see if the player got three in a row.
@@ -21,6 +29,14 @@
  * __Check for Conflicts__
  * Helper function that checks to see if the last move has already been played.
  * 
+ * __Game Over__
+ * Called by the update view function if there is a winner.
+ * Shows the game over modal, changes background color and attaches the controller to the 'play again?' button
+ * 
+ * __Rotated and Gravitated__
+ * -Rotated rotates all of the blocks 90 degrees. This works.
+ * -Gravitated is supposed to drop the blocks to the lowest possible space. This does not work, yet...
+ * 
  * */
 
 const $ = (id) => document.getElementById(id);
@@ -28,6 +44,9 @@ const $c = (classname) => document.getElementsByClassName(classname);
 const gameBoard = $c('game-board')[0];
 
 class Board {
+    /******
+    * MODEL *
+   ****************/
   constructor(startingPlayer){
     this.xMoves = [];
     this.oMoves = [];
@@ -40,6 +59,10 @@ class Board {
     this.gravity = false;
   }
   
+
+    /****************
+   * CONTROLLER *
+   ****************/
   handleBoardInput = (move) => {
     if (this.checkForConflicts(move)) {
       console.log('Hey, that move has already been played!');
@@ -73,52 +96,36 @@ class Board {
       }
     }
   }
-    
-    updateView = () => {
-      //clear squares then paint them
-      [].forEach.call($c('square'), el => el.style.background = '#eee');
-      this.paintSquares();
 
-      if (this.winner !== null) {
-        const winner = this.winner === 'x' ? this.xName : this.oName;
-        this.gameOver(`${winner} WINS!`);
-      } else if (this.xMoves.length + this.oMoves.length === 9) {
-        this.gameOver('TIE GAME!');
-      }
-      //update current player in scoreboard and hidden gameover screen
-      $('current-player').classList.remove('blue');
-      $('current-player').classList.remove('red');
-      $('current-player').innerHTML = this.currentPlayer === 'x' ? this.xName : this.oName;
-      $('current-player').classList.add(this.currentPlayer === 'x' ? 'red' : 'blue');
+
+
+  /****************
+   * VIEW HANDLING *
+   ****************/
+  updateView = () => {
+    //clear squares then paint them
+    [].forEach.call($c('square'), el => el.style.background = '#eee');
+    this.paintSquares();
+
+    if (this.winner !== null) {
+      const winner = this.winner === 'x' ? this.xName : this.oName;
+      this.gameOver(`${winner} WINS!`);
+    } else if (this.xMoves.length + this.oMoves.length === 9) {
+      this.gameOver('TIE GAME!');
     }
-
-  //helper functions
-  checkForConflicts = (move) => {
-    const allMoves = [...this.xMoves, ...this.oMoves];
-    return allMoves.filter(x => x === move).length !== 0;
+    //update current player in scoreboard and hidden gameover screen
+    $('current-player').classList.remove('blue');
+    $('current-player').classList.remove('red');
+    $('current-player').innerHTML = this.currentPlayer === 'x' ? this.xName : this.oName;
+    $('current-player').classList.add(this.currentPlayer === 'x' ? 'red' : 'blue');
   }
 
-  checkWin = () => {
-    const winConditions = [['1','2','3'], ['4','5','6'], ['7','8','9'], ['1','4','7'], ['2','5','8'], ['3','6','9'], ['1','5','9'], ['3','5','7']];
-    const playerMoves = this.currentPlayer === 'x' ? this.xMoves : this.oMoves;
-    return winConditions.some(condition => condition.every(position => playerMoves.includes(position)))
-  }
-  
   paintSquares = () => {
     this.xMoves.forEach( square => {
       $(square).style.background = 'red';
     });
     this.oMoves.forEach( square => {
       $(square).style.background = 'blue';
-    });
-  }
-  gameOver = (text) => {
-    //add flashy background, display gameover screen, and wire up playagain button.
-    document.body.classList.add('winner');
-    $('gameover').style.display = 'flex';
-    $('gameover-text').innerHTML = text;
-    $('play-again').addEventListener('click', ()=>{
-      this.clearBoard();
     });
   }
 
@@ -143,6 +150,37 @@ class Board {
     this.updateView()
   }
 
+
+
+  /*******************
+   * HELPER FUNCTIONS *
+   *******************/
+  checkForConflicts = (move) => {
+    const allMoves = [...this.xMoves, ...this.oMoves];
+    return allMoves.filter(x => x === move).length !== 0;
+  }
+
+  checkWin = () => {
+    const winConditions = [['1','2','3'], ['4','5','6'], ['7','8','9'], ['1','4','7'], ['2','5','8'], ['3','6','9'], ['1','5','9'], ['3','5','7']];
+    const playerMoves = this.currentPlayer === 'x' ? this.xMoves : this.oMoves;
+    return winConditions.some(condition => condition.every(position => playerMoves.includes(position)))
+  }
+  
+  gameOver = (text) => {
+    //add flashy background, display gameover screen, and wire up playagain button.
+    document.body.classList.add('winner');
+    $('gameover').style.display = 'flex';
+    $('gameover-text').innerHTML = text;
+    $('play-again').addEventListener('click', ()=>{
+      this.clearBoard();
+    });
+  }
+
+
+
+    /****************
+   * GRAVITY FEATURE *
+   ****************/
   gravitated = (x, arr) => {
     x = Number(x);
     arr = arr.map(x => Number(x));
@@ -189,30 +227,37 @@ class Board {
   }
 }
 
+//create a board
 let ticTacToe = new Board();
 ticTacToe.updateView();
  
-/* __EVENT LISTENERS__ */
 
+  /******************
+   * EVENT LISTENERS *
+   ******************/
+
+//Listen for user moves
 gameBoard.addEventListener('click', e => {
   const square =  e.composedPath()[0].id;
   ticTacToe.handleBoardInput(square);
 });
 
+//get player names and update model
 $('start').addEventListener('click', e => {
-  //get form data and update state
+  //update model
   const player1 = document.getElementsByName('player')[0].value;
   const player2 = document.getElementsByName('player')[1].value;
   ticTacToe.xName = player1;
   ticTacToe.oName = player2;
 
-  //paint the names and remove the starting screen
+  //update view
   ticTacToe.updateView();
-  $c('red')[1].innerHTML = player1;
-  $c('blue')[0].innerHTML = player2;
+  $c('red')[1].innerHTML = player1; //current-player is the first instance of the red class
+  $c('blue')[0].innerHTML = player2; //first instance of the blue class
   $('start-game').style.display = 'none';
 });
 
+//set gravity state
 $('gravity-toggle').addEventListener('click', e => {
   const state = e.path[0].checked;
   ticTacToe.gravity = state;

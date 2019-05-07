@@ -63,8 +63,8 @@ class Board {
             .sort((a, b) => b - a);
           let oRotated = this.oMoves.map(val => val = this.rotated(val))
             .sort((a, b) => b - a);
-          xRotated = xRotated.map(val => this.gravitated(val, xRotated));
-          oRotated = oRotated.map(val => this.gravitated(val, oRotated));
+          xRotated = xRotated.map(val => this.gravitated(val, [...oRotated, ...xRotated]).toString());
+          oRotated = oRotated.map(val => this.gravitated(val, [...oRotated, ...xRotated]).toString());
 
           this.xMoves = xRotated;
           this.oMoves = oRotated; 
@@ -144,7 +144,8 @@ class Board {
   }
 
   gravitated = (x, arr) => {
-    x = Number(x)
+    x = Number(x);
+    arr = arr.map(x => Number(x));
     if (x > 6) {
       return x;
     } else if (x > 3) {
